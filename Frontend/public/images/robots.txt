@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://salmon-meadow-0e430c50f.6.azurestaticapps.net/sitemap.xml

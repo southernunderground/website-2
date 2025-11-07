@@ -1,0 +1,8 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "dependencies": {
+    "nodemailer": "^7.0.3",
+    "multiparty": "^4.2.3"
+  }
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://example.com/</loc></url>
+  <url><loc>https://example.com/about</loc></url>
+  <url><loc>https://example.com/services</loc></url>
+  <url><loc>https://example.com/projects</loc></url>
+  <url><loc>https://example.com/safety</loc></url>
+  <url><loc>https://example.com/careers</loc></url>
+  <url><loc>https://example.com/blog</loc></url>
+  <url><loc>https://example.com/contact</loc></url>
+  <url><loc>https://example.com/services/directional-drilling</loc></url>
+  <url><loc>https://example.com/services/utility-installation</loc></url>
+  <url><loc>https://example.com/services/pile-installation</loc></url>
+  <url><loc>https://example.com/services/civil-construction</loc></url>
+  <url><loc>https://example.com/services/water-sewer-treatment</loc></url>
+  <url><loc>https://example.com/projects/1</loc></url>
+  <url><loc>https://example.com/projects/2</loc></url>
+  <url><loc>https://example.com/projects/3</loc></url>
+  <url><loc>https://example.com/projects/4</loc></url>
+  <url><loc>https://example.com/blog/1</loc></url>
+  <url><loc>https://example.com/blog/2</loc></url>
+  <url><loc>https://example.com/blog/3</loc></url>
+</urlset>
