@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 // import SocialHeader from './components/layout/SocialHeader';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -25,7 +25,8 @@ function App() {
         <Header />
         <main>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Navigate to="/southernundergroundhomepage" replace />} />
+            <Route path="/southernundergroundhomepage" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/:serviceId" element={<ServiceDetail />} />
