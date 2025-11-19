@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
 Sitemap: https://www.suofla.com/sitemap.xml
+Clean-param: /?ref=,utm_source,utm_campaign,utm_medium

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import { API_URL } from '../config/api';
 
 const Contact: React.FC = () => {
@@ -127,6 +128,13 @@ const Contact: React.FC = () => {
 
   return (
     <div className="pt-16 bg-white dark:bg-gray-900 transition-colors duration-300 min-h-screen">
+      <Helmet>
+        <title>Contact Southern Underground of Louisiana</title>
+        <meta
+          name="description"
+          content="Contact Southern Underground of Louisiana to request a bid, schedule a consultation, or ask about directional drilling and underground utility services in Louisiana."
+        />
+      </Helmet>
       {/* Hero Section */}
       <section className="relative min-h-[50vh] flex items-center text-white">
         <div

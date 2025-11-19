@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import React from 'react';
 
 export const OrganizationSchema = () => {
   const schema = {
@@ -7,8 +8,8 @@ export const OrganizationSchema = () => {
     "name": "Southern Underground of Louisiana",
     "alternateName": "Southern Underground",
     "url": "https://www.suofla.com",
-    "logo": "https://www.suofla.com/Logos/LOGO%20WHITE%20PNG%20.png",
-    "description": "Leading construction company specializing in directional drilling, utility installation, and civil construction across the nation.",
+    "logo": "https://www.suofla.com/Logos/logo-white.png",
+    "description": "Southern Underground of Louisiana is a construction contractor specializing in directional drilling, underground utilities, and civil construction across Louisiana and the Gulf Coast.",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Louisiana",

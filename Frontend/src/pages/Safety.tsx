@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 // keep your data import if needed elsewhere
 // import { certifications } from '../data/mockData';
 
@@ -103,6 +104,13 @@ const Safety: React.FC = () => {
 
   return (
     <div className="pt-16 bg-white dark:bg-gray-900 transition-colors duration-300 min-h-screen">
+      <Helmet>
+        <title>Safety | Southern Underground of Louisiana</title>
+        <meta
+          name="description"
+          content="Learn about Southern Underground of Louisiana's safety culture, training programs, and field procedures that protect crews, clients, and the public on every project."
+        />
+      </Helmet>
       {/* Hero (mobile-first height) */}
       {/* <section className="relative overflow-hidden">
         <div

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Calendar, MapPin, ArrowRight, Filter } from 'lucide-react';
 import { projects } from '../data/mockData';
 import { CheckCircle, Shield, Users, Award } from 'lucide-react'
@@ -18,6 +19,13 @@ const Projects: React.FC = () => {
 
   return (
     <div className="pt-16 bg-white dark:bg-gray-900 transition-colors duration-300 min-h-screen">
+      <Helmet>
+        <title>Projects | Southern Underground of Louisiana</title>
+        <meta
+          name="description"
+          content="See featured projects from Southern Underground of Louisiana, including directional drilling, underground utilities, and civil construction work across the Gulf Coast region."
+        />
+      </Helmet>
       {/* Hero Section */}
       <section className="relative py-20 text-white overflow-hidden">
         <div

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import {
   ArrowRight,
   ChevronDown,
@@ -1024,6 +1025,13 @@ const Services: React.FC = () => {
 
   return (
     <div className="pt-16 bg-white dark:bg-gray-900 transition-colors duration-300">
+      <Helmet>
+        <title>Services | Southern Underground of Louisiana | Louisiana Construction Company</title>
+        <meta
+          name="description"
+          content="Explore Southern Underground of Louisiana's services, including directional drilling, underground utility installation, underground electrical duct banks, deep foundations, civil construction, drainage systems, pipe fabrication, and underground tunneling."
+        />
+      </Helmet>
       {/* Hero (kept consistent with your Services hero style) */}
       <section className="relative py-20 text-white overflow-hidden">
         <div

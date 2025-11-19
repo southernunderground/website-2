@@ -19,9 +19,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
       <LanguageProvider>
-        <ThemeProvider>
+        {/* <ThemeProvider> */}
           <App />
-        </ThemeProvider>
+        {/* </ThemeProvider> */}
       </LanguageProvider>
     </HelmetProvider>
   </StrictMode>

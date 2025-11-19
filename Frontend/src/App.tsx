@@ -15,18 +15,20 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import Contact from './pages/Contact';
 import ScrollToTop from './components/common/ScrollToTop';
+import { OrganizationSchema } from './components/common/StructuredData';
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
+        <OrganizationSchema />
         <ScrollToTop />
         {/* <SocialHeader /> */}
         <Header />
         <main>
           <Routes>
-            <Route path="/" element={<Navigate to="/southernundergroundhomepage" replace />} />
-            <Route path="/southernundergroundhomepage" element={<Home />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/southernundergroundhomepage" element={<Navigate to="/" replace />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/:serviceId" element={<ServiceDetail />} />

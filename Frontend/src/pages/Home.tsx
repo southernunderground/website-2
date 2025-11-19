@@ -10,7 +10,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <Helmet>
-        <title>Southern Underground | Louisiana Construction Company</title>
+        <title>Southern Underground of Louisiana| Louisiana Construction Company</title>
         <meta
           name="description"
           content="Southern Underground provides directional drilling, utility installation and civil construction services across Louisiana."
