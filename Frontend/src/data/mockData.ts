@@ -1128,15 +1128,15 @@ export const teamMembers = [
     email: 'lrivera@southernunderground.com',
     linkedIn: '#'
   },
-  {
-    id: 6,
-    name: 'Arson Kirkland',
-    position: 'Superintendent',
-    bio: 'Arson oversees on-site project activities, coordinating crews, subcontractors, and resources to ensure projects are completed safely, on time, and to company standards. He acts as the key liaison between field personnel and management, maintaining quality control and resolving site issues promptly.',
-    image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400',
-    email: 'akirkland@southernunderground.com',
-    linkedIn: '#'
-  }
+  // {
+  //   id: 6,
+  //   name: 'Arson Kirkland',
+  //   position: 'Superintendent',
+  //   bio: 'Arson oversees on-site project activities, coordinating crews, subcontractors, and resources to ensure projects are completed safely, on time, and to company standards. He acts as the key liaison between field personnel and management, maintaining quality control and resolving site issues promptly.',
+  //   image: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400',
+  //   email: 'akirkland@southernunderground.com',
+  //   linkedIn: '#'
+  // }
 ];
 
 export const jobOpenings = [
