@@ -26,10 +26,16 @@ module.exports = async (req, res) => {
     const name = fields.name?.[0];
     const email = fields.email?.[0];
     const phone = fields.phone?.[0];
-    const position = fields.position?.[0];
+    let position = fields.position?.[0];
+    const customPosition = fields.customPosition?.[0]; // Get custom position
     const experience = fields.experience?.[0];
     const message = fields.message?.[0];
     const resumeFile = files.resume?.[0];
+
+    // Use custom position if 'other' is selected
+    if (position === 'other' && customPosition) {
+      position = customPosition;
+    }
 
     if (!resumeFile) {
       return res.status(400).json({ msg: 'Resume file is required' });
@@ -48,8 +54,8 @@ module.exports = async (req, res) => {
 
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
-        // to: 'career@suofla.com',
-        to: 'kasiparimal@gmail.com',
+        to: 'career@suofla.com', // Production email
+        // to: 'kasiparimal@gmail.com', // Debug email
         subject: `Application for ${position} – ${name}`,
         html,
         attachments: [{
@@ -78,17 +84,11 @@ module.exports = async (req, res) => {
       res.json({ msg: 'Application submitted successfully!' });
     } catch (error) {
       console.error('Email error:', error);
-      // Clean up file if it exists
-      if (resumeFile && resumeFile.path) {
-        fs.unlink(resumeFile.path, (unlinkErr) => {
-          if (unlinkErr) console.error('Error deleting temp file:', unlinkErr);
-        });
-      }
+      if (resumeFile) fs.unlink(resumeFile.path, () => { });
 
-      // Return specific error message for debugging
       res.status(500).json({
         msg: 'Server error. Please try again.',
-        debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+        debug: process.env.NODE_ENV === 'development' ? JSON.stringify(error, Object.getOwnPropertyNames(error)) : undefined
       });
     }
   });
