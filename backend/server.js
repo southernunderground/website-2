@@ -3,7 +3,8 @@
 // const PORT = process.env.PORT || 5050;
 // app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 // backend/server.js
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -25,11 +26,15 @@ function connectMongo() {
 // import your routes
 const contact = require('./routes/contact');
 const newsletter = require('./routes/newsletter');
-const jobApp = require('./routes/jobApplication');
+// const jobApp = require('./routes/jobApplication'); // Removed legacy route
 
-app.use('/api/contact', async (req,res,next)=>{await connectMongo();next();}, contact);
-app.use('/api/newsletter', async (req,res,next)=>{await connectMongo();next();}, newsletter);
-app.use('/api/job', async (req,res,next)=>{await connectMongo();next();}, jobApp);
+const jobApply = require('../api/job-apply');
+const contactApi = require('../api/contact');
+
+// app.use('/api/contact', async (req, res, next) => { await connectMongo(); next(); }, contact);
+app.post('/api/contact', contactApi);
+app.use('/api/newsletter', async (req, res, next) => { await connectMongo(); next(); }, newsletter);
+app.post('/api/job-apply', jobApply);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

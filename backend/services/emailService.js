@@ -77,8 +77,8 @@ async function sendContactSubmissionEmail(contact) {
 
   return transporter.sendMail({
     from: process.env.EMAIL_USER,
-    to: 'info@suofla.com',
-    // to: 'kasiparimal@gmail.com',
+    // to: 'info@suofla.com',
+    to: 'kasiparimal@gmail.com',
     subject: `New contact request – ${name}`,
     html,
   });

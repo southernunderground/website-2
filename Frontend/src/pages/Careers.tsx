@@ -27,20 +27,20 @@ const TRANSLATIONS = {
     b4: "Professional Development", b4d: "Training & career advancement programs",
     b5: "Job Security", b5d: "Stable growth-oriented company",
     applyFor: "Apply",
-    fullName: "Full Name *", 
-    email: "Email Address *", 
+    fullName: "Full Name *",
+    email: "Email Address *",
     phone: "Phone Number *",
-    exp: "Years of Experience", 
+    exp: "Years of Experience",
     selectExp: "Select experience level",
-    exp1: "0-2 years", 
-    exp2: "3-5 years", 
-    exp3: "6-10 years", 
+    exp1: "0-2 years",
+    exp2: "3-5 years",
+    exp3: "6-10 years",
     exp4: "10+ years",
-    resume: "Resume/CV *", 
+    resume: "Resume/CV *",
     resumeFormats: "Accepted formats: PDF, DOC, DOCX (Max 5MB)",
     coverLetter: "Cover Letter / Additional Information",
     coverLetterPH: "Tell us why you're interested in this position and what makes you a great fit...",
-    submitting: "Submitting...", 
+    submitting: "Submitting...",
     submit: "Submit Application",
     appSuccess: "Application submitted successfully!",
     appFailed: "Submission failed. Please try again.",
@@ -69,20 +69,20 @@ const TRANSLATIONS = {
     b4: "Desarrollo Profesional", b4d: "Programas de capacitación y avance profesional",
     b5: "Estabilidad Laboral", b5d: "Empresa estable orientada al crecimiento",
     applyFor: "Aplicar",
-    fullName: "Nombre Completo *", 
-    email: "Correo Electrónico *", 
+    fullName: "Nombre Completo *",
+    email: "Correo Electrónico *",
     phone: "Número de Teléfono *",
-    exp: "Años de Experiencia", 
+    exp: "Años de Experiencia",
     selectExp: "Seleccione nivel de experiencia",
-    exp1: "0-2 años", 
-    exp2: "3-5 años", 
-    exp3: "6-10 años", 
+    exp1: "0-2 años",
+    exp2: "3-5 años",
+    exp3: "6-10 años",
     exp4: "10+ años",
-    resume: "Currículum *", 
+    resume: "Currículum *",
     resumeFormats: "Formatos aceptados: PDF, DOC, DOCX (Máx 5MB)",
     coverLetter: "Carta de Presentación / Información Adicional",
     coverLetterPH: "Cuéntanos por qué te interesa este puesto y qué te hace un gran candidato...",
-    submitting: "Enviando...", 
+    submitting: "Enviando...",
     submit: "Enviar Solicitud",
     appSuccess: "¡Solicitud enviada con éxito!",
     appFailed: "Error al enviar. Por favor inténtalo de nuevo.",
@@ -111,16 +111,16 @@ function pick(val: any, locale: 'en' | 'es'): string {
 const Careers: React.FC = () => {
   const { lang } = useLanguage();
   const t = (key: keyof typeof TRANSLATIONS['en']) => TRANSLATIONS[lang][key] || key;
-  
+
   const applicationFormRef = useRef<HTMLDivElement>(null);
   const [applicationData, setApplicationData] = useState({
-    name: '', 
-    email: '', 
-    phone: '', 
-    position: '', 
+    name: '',
+    email: '',
+    phone: '',
+    position: '',
     customPosition: '',
-    experience: '', 
-    message: '', 
+    experience: '',
+    message: '',
     resume: null as File | null,
   });
   const [submitting, setSubmitting] = useState(false);
@@ -136,36 +136,36 @@ const Careers: React.FC = () => {
 
   const handleApplicationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormMsg(''); 
+    setFormMsg('');
     setSubmitting(true);
-    
+
     try {
       const payload = new FormData();
       Object.entries(applicationData).forEach(([k, v]) => {
-        if (k === 'resume') return; 
+        if (k === 'resume') return;
         payload.append(k, v as string);
       });
       if (applicationData.resume) payload.append('resume', applicationData.resume);
-      
-      const res = await fetch(`${API_URL}/job-apply`, { 
-        method: 'POST', 
-        body: payload 
+
+      const res = await fetch(`${API_URL}/job-apply`, {
+        method: 'POST',
+        body: payload
       });
       const data = await res.json();
-      
+
       if (res.ok) {
         setFormMsg(t('appSuccess'));
         setTimeout(() => {
           setFormMsg('');
-          setApplicationData({ 
-            name: '', 
-            email: '', 
-            phone: '', 
-            position: '', 
+          setApplicationData({
+            name: '',
+            email: '',
+            phone: '',
+            position: '',
             customPosition: '',
-            experience: '', 
-            message: '', 
-            resume: null 
+            experience: '',
+            message: '',
+            resume: null
           });
         }, 3000);
       } else {
@@ -180,7 +180,7 @@ const Careers: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setApplicationData((prev) => ({ ...prev, [name]: value }));
-    
+
     // Clear custom position when selecting a non-"other" option
     if (name === 'position' && value !== 'other') {
       setApplicationData((prev) => ({ ...prev, customPosition: '' }));
@@ -204,7 +204,7 @@ const Careers: React.FC = () => {
           {/* <div className="absolute inset-0 bg-gradient-to-br from-primary-900/90 via-primary-800/80 to-secondary-900/90" /> */}
           <div className="absolute inset-0 bg-gradient-to-br from-primary-800/85 via-primary-600/75 to-secondary-600/80 dark:from-gray-200/80 dark:via-gray-400/90 dark:to-gray-700/90" />
         </div>
-        
+
         {/* Animated background elements */}
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-white/5 rounded-full blur-3xl animate-pulse"></div>
@@ -219,8 +219,8 @@ const Careers: React.FC = () => {
             <p className="text-xl md:text-2xl text-primary-100 max-w-4xl mx-auto leading-relaxed mb-8">
               {t('joinTeamDesc')}
             </p>
-            <button 
-              onClick={scrollToForm} 
+            <button
+              onClick={scrollToForm}
               className="px-8 py-4 bg-secondary-600 text-white rounded-lg font-semibold hover:bg-secondary-700 transition-colors"
             >
               {t('applyFor')}
@@ -238,10 +238,10 @@ const Careers: React.FC = () => {
             <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">{t('culturePara2')}</p>
           </div>
           <div className="relative">
-            <img 
-              src="/Deep Foundation/IMG_4365.JPG" 
-              alt="Construction team at work" 
-              className="rounded-2xl shadow-xl w-full h-64 object-cover" 
+            <img
+              src="/Deep Foundation/IMG_4365.JPG"
+              alt="Construction team at work"
+              className="rounded-2xl shadow-xl w-full h-64 object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl" />
           </div>
@@ -289,38 +289,38 @@ const Careers: React.FC = () => {
 
           <form onSubmit={handleApplicationSubmit} className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <input 
-                type="text" 
-                name="name" 
-                placeholder={t('fullName')} 
-                value={applicationData.name} 
-                onChange={handleInputChange} 
-                required 
-                className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500" 
+              <input
+                type="text"
+                name="name"
+                placeholder={t('fullName')}
+                value={applicationData.name}
+                onChange={handleInputChange}
+                required
+                className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500"
               />
-              <input 
-                type="email" 
-                name="email" 
-                placeholder={t('email')} 
-                value={applicationData.email} 
-                onChange={handleInputChange} 
-                required 
-                className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500" 
+              <input
+                type="email"
+                name="email"
+                placeholder={t('email')}
+                value={applicationData.email}
+                onChange={handleInputChange}
+                required
+                className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500"
               />
-              <input 
-                type="tel" 
-                name="phone" 
-                placeholder={t('phone')} 
-                value={applicationData.phone} 
-                onChange={handleInputChange} 
-                required 
-                className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500" 
+              <input
+                type="tel"
+                name="phone"
+                placeholder={t('phone')}
+                value={applicationData.phone}
+                onChange={handleInputChange}
+                required
+                className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500"
               />
-              <select 
-                name="experience" 
-                value={applicationData.experience} 
-                onChange={handleInputChange} 
-                required 
+              <select
+                name="experience"
+                value={applicationData.experience}
+                onChange={handleInputChange}
+                required
                 className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500"
               >
                 <option value="">{t('selectExp')}</option>
@@ -330,17 +330,17 @@ const Careers: React.FC = () => {
                 <option value="10+">{t('exp4')}</option>
               </select>
             </div>
-            
+
             <div>
               <label htmlFor="position" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {t('interestedIn')}
               </label>
-              <select 
-                id="position" 
-                name="position" 
-                value={applicationData.position} 
-                onChange={handleInputChange} 
-                required 
+              <select
+                id="position"
+                name="position"
+                value={applicationData.position}
+                onChange={handleInputChange}
+                required
                 className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500"
               >
                 <option value="">{t('selectPosition')}</option>
@@ -359,56 +359,56 @@ const Careers: React.FC = () => {
                 <label htmlFor="customPosition" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   {t('specifyPosition')}
                 </label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   id="customPosition"
-                  name="customPosition" 
-                  placeholder={t('specifyPositionPH')} 
-                  value={applicationData.customPosition} 
-                  onChange={handleInputChange} 
+                  name="customPosition"
+                  placeholder={t('specifyPositionPH')}
+                  value={applicationData.customPosition}
+                  onChange={handleInputChange}
                   required={applicationData.position === 'other'}
-                  className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500" 
+                  className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500"
                 />
               </div>
             )}
-            
+
             <div>
               <label htmlFor="resume" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {t('resume')}
               </label>
-              <input 
-                type="file" 
-                id="resume" 
-                name="resume" 
-                onChange={handleFileChange} 
-                required 
+              <input
+                type="file"
+                id="resume"
+                name="resume"
+                onChange={handleFileChange}
+                required
                 accept=".pdf,.doc,.docx"
-                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100" 
+                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
               />
               <p className="text-xs text-gray-500 mt-1">{t('resumeFormats')}</p>
             </div>
-            
+
             <div>
-              <textarea 
-                name="message" 
-                placeholder={t('coverLetterPH')} 
-                value={applicationData.message} 
-                onChange={handleInputChange} 
-                rows={4} 
+              <textarea
+                name="message"
+                placeholder={t('coverLetterPH')}
+                value={applicationData.message}
+                onChange={handleInputChange}
+                rows={4}
                 className="w-full p-3 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-primary-500"
               />
             </div>
-            
+
             <div className="text-center">
-              <button 
-                type="submit" 
-                disabled={submitting} 
+              <button
+                type="submit"
+                disabled={submitting}
                 className="px-8 py-4 bg-secondary-600 text-white rounded-lg font-semibold hover:bg-secondary-700 transition-colors disabled:bg-gray-400"
               >
                 {submitting ? t('submitting') : t('submit')}
               </button>
             </div>
-            
+
             {formMsg && (
               <p className={`text-center ${formMsg.includes('success') || formMsg.includes('éxito') ? 'text-green-500' : 'text-red-500'}`}>
                 {formMsg}

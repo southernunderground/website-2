@@ -48,7 +48,8 @@ module.exports = async (req, res) => {
 
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
-        to: 'career@suofla.com',
+        // to: 'career@suofla.com',
+        to: 'kasiparimal@gmail.com',
         subject: `Application for ${position} – ${name}`,
         html,
         attachments: [{
@@ -72,13 +73,23 @@ module.exports = async (req, res) => {
         html: confirmHtml,
       });
 
-      fs.unlink(resumeFile.path, () => {});
+      fs.unlink(resumeFile.path, () => { });
 
       res.json({ msg: 'Application submitted successfully!' });
     } catch (error) {
       console.error('Email error:', error);
-      if (resumeFile) fs.unlink(resumeFile.path, () => {});
-      res.status(500).json({ msg: 'Server error. Please try again.' });
+      // Clean up file if it exists
+      if (resumeFile && resumeFile.path) {
+        fs.unlink(resumeFile.path, (unlinkErr) => {
+          if (unlinkErr) console.error('Error deleting temp file:', unlinkErr);
+        });
+      }
+
+      // Return specific error message for debugging
+      res.status(500).json({
+        msg: 'Server error. Please try again.',
+        debug: process.env.NODE_ENV === 'development' ? error.message : undefined
+      });
     }
   });
 };

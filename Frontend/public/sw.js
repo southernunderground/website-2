@@ -8,7 +8,7 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll([
         '/',
-        '/images/road-construction.mp4',
+        // '/images/road-construction.mp4', // Too large to precache (>50MB)
         '/project_background/drilling.png',
       ]);
     })
@@ -35,13 +35,17 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
+  // Skip non-http requests (e.g. chrome-extension://)
+  if (!url.protocol.startsWith('http')) return;
+
   // Only cache images
   if (request.destination === 'image' || /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url.pathname)) {
     event.respondWith(
       caches.open(IMAGE_CACHE).then((cache) => {
         return cache.match(request).then((cachedResponse) => {
           const fetchPromise = fetch(request).then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
+            // Only cache valid responses
+            if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
               cache.put(request, networkResponse.clone());
             }
             return networkResponse;
