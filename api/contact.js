@@ -31,8 +31,8 @@ module.exports = async (req, res) => {
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: 'parimalkashireddy1@gmail.com', // Updated recipient
-      // to: 'info@suofla.com',
+      // Updated recipient
+      to: 'info@suofla.com',
       // to: 'kasiparimal@gmail.com', // Debug
       subject: `New contact request – ${name}`,
       html,
@@ -68,9 +68,6 @@ module.exports = async (req, res) => {
     res.status(200).json({ msg: 'Thank you! Your request has been submitted.' });
   } catch (err) {
     console.error('Contact form error:', err);
-    res.status(500).json({
-      msg: 'Server error',
-      debug: process.env.NODE_ENV === 'development' ? JSON.stringify(err, Object.getOwnPropertyNames(err)) : undefined
-    });
+    res.status(500).json({ msg: 'Server error' });
   }
 };
