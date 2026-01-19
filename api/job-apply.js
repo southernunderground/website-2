@@ -1,6 +1,108 @@
+// const nodemailer = require('nodemailer');
+// const multiparty = require('multiparty');
+// const fs = require('fs');
+
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: process.env.EMAIL_USER,
+//     pass: process.env.EMAIL_PASS,
+//   },
+// });
+
+// module.exports = async (req, res) => {
+//   if (req.method !== 'POST') {
+//     return res.status(405).json({ msg: 'Method not allowed' });
+//   }
+
+//   const form = new multiparty.Form();
+
+//   form.parse(req, async (err, fields, files) => {
+//     if (err) {
+//       console.error('Form parse error:', err);
+//       return res.status(500).json({ msg: 'Error parsing form data' });
+//     }
+
+//     const name = fields.name?.[0];
+//     const email = fields.email?.[0];
+//     const phone = fields.phone?.[0];
+//     let position = fields.position?.[0];
+//     const customPosition = fields.customPosition?.[0]; // Get custom position
+//     const experience = fields.experience?.[0];
+//     const message = fields.message?.[0];
+//     const resumeFile = files.resume?.[0];
+
+//     // Use custom position if 'other' is selected
+//     if (position === 'other' && customPosition) {
+//       position = customPosition;
+//     }
+
+//     if (!resumeFile) {
+//       return res.status(400).json({ msg: 'Resume file is required' });
+//     }
+
+//     try {
+//       const html = `
+//         <h2>New Job Application for: ${position}</h2>
+//         <p><strong>Name:</strong> ${name}</p>
+//         <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+//         <p><strong>Phone:</strong> ${phone}</p>
+//         <p><strong>Experience:</strong> ${experience}</p>
+//         <p><strong>Message:</strong><br>${message || 'N/A'}</p>
+//         <p><strong>Resume:</strong> See attachment</p>
+//       `;
+
+//       await transporter.sendMail({
+//         from: process.env.EMAIL_USER,
+//         to: 'career@suofla.com', // Production email
+//         // to: 'kasiparimal@gmail.com', // Debug email
+//         subject: `Application for ${position} – ${name}`,
+//         html,
+//         attachments: [{
+//           filename: resumeFile.originalFilename,
+//           path: resumeFile.path
+//         }]
+//       });
+
+//       const confirmHtml = `
+//         <h2>Application Received</h2>
+//         <p>Hi ${name},</p>
+//         <p>Thank you for applying for the <strong>${position}</strong> position at Southern Underground.</p>
+//         <p>We have received your application and our team will review it shortly. If your profile matches our requirements, we will reach out to you with next steps.</p>
+//         <p>Best regards,<br/>Southern Underground Hiring Team</p>
+//       `;
+
+//       await transporter.sendMail({
+//         from: process.env.EMAIL_USER,
+//         to: email,
+//         subject: `We received your application for ${position}`,
+//         html: confirmHtml,
+//       });
+
+//       fs.unlink(resumeFile.path, () => { });
+
+//       res.json({ msg: 'Application submitted successfully!' });
+//     } catch (error) {
+//       console.error('Email error:', error);
+//       if (resumeFile) fs.unlink(resumeFile.path, () => { });
+
+//       res.status(500).json({
+//         msg: 'Server error. Please try again.',
+//         debug: process.env.NODE_ENV === 'development' ? JSON.stringify(error, Object.getOwnPropertyNames(error)) : undefined
+//       });
+//     }
+//   });
+// };
 const nodemailer = require('nodemailer');
-const multiparty = require('multiparty');
+const formidable = require('formidable');
 const fs = require('fs');
+
+// IMPORTANT: Disable Next.js body parsing for file uploads
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -10,24 +112,40 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
+  // Add CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ msg: 'Method not allowed' });
   }
 
-  const form = new multiparty.Form();
+  // Use formidable instead of multiparty (better Vercel support)
+  const form = formidable({
+    keepExtensions: true,
+    maxFileSize: 10 * 1024 * 1024, // 10MB limit
+  });
 
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      console.error('Form parse error:', err);
-      return res.status(500).json({ msg: 'Error parsing form data' });
-    }
+  try {
+    const [fields, files] = await new Promise((resolve, reject) => {
+      form.parse(req, (err, fields, files) => {
+        if (err) reject(err);
+        else resolve([fields, files]);
+      });
+    });
 
+    // Extract field values (formidable returns arrays)
     const name = fields.name?.[0];
     const email = fields.email?.[0];
     const phone = fields.phone?.[0];
     let position = fields.position?.[0];
-    const customPosition = fields.customPosition?.[0]; // Get custom position
+    const customPosition = fields.customPosition?.[0];
     const experience = fields.experience?.[0];
     const message = fields.message?.[0];
     const resumeFile = files.resume?.[0];
@@ -41,55 +159,55 @@ module.exports = async (req, res) => {
       return res.status(400).json({ msg: 'Resume file is required' });
     }
 
-    try {
-      const html = `
-        <h2>New Job Application for: ${position}</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
-        <p><strong>Phone:</strong> ${phone}</p>
-        <p><strong>Experience:</strong> ${experience}</p>
-        <p><strong>Message:</strong><br>${message || 'N/A'}</p>
-        <p><strong>Resume:</strong> See attachment</p>
-      `;
+    const html = `
+      <h2>New Job Application for: ${position}</h2>
+      <p><strong>Name:</strong> ${name}</p>
+      <p><strong>Email:</strong> <a href="mailto:${email}">${email}</a></p>
+      <p><strong>Phone:</strong> ${phone}</p>
+      <p><strong>Experience:</strong> ${experience}</p>
+      <p><strong>Message:</strong><br>${message || 'N/A'}</p>
+      <p><strong>Resume:</strong> See attachment</p>
+    `;
 
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: 'career@suofla.com', // Production email
-        // to: 'kasiparimal@gmail.com', // Debug email
-        subject: `Application for ${position} – ${name}`,
-        html,
-        attachments: [{
-          filename: resumeFile.originalFilename,
-          path: resumeFile.path
-        }]
-      });
+    // Send to company
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: 'career@suofla.com',
+      subject: `Application for ${position} – ${name}`,
+      html,
+      attachments: [{
+        filename: resumeFile.originalFilename || resumeFile.newFilename,
+        path: resumeFile.filepath
+      }]
+    });
 
-      const confirmHtml = `
-        <h2>Application Received</h2>
-        <p>Hi ${name},</p>
-        <p>Thank you for applying for the <strong>${position}</strong> position at Southern Underground.</p>
-        <p>We have received your application and our team will review it shortly. If your profile matches our requirements, we will reach out to you with next steps.</p>
-        <p>Best regards,<br/>Southern Underground Hiring Team</p>
-      `;
+    // Send confirmation to applicant
+    const confirmHtml = `
+      <h2>Application Received</h2>
+      <p>Hi ${name},</p>
+      <p>Thank you for applying for the <strong>${position}</strong> position at Southern Underground.</p>
+      <p>We have received your application and our team will review it shortly. If your profile matches our requirements, we will reach out to you with next steps.</p>
+      <p>Best regards,<br/>Southern Underground Hiring Team</p>
+    `;
 
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: `We received your application for ${position}`,
-        html: confirmHtml,
-      });
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: `We received your application for ${position}`,
+      html: confirmHtml,
+    });
 
-      fs.unlink(resumeFile.path, () => { });
+    // Clean up uploaded file
+    fs.unlink(resumeFile.filepath, () => { });
 
-      res.json({ msg: 'Application submitted successfully!' });
-    } catch (error) {
-      console.error('Email error:', error);
-      if (resumeFile) fs.unlink(resumeFile.path, () => { });
+    return res.status(200).json({ msg: 'Application submitted successfully!' });
 
-      res.status(500).json({
-        msg: 'Server error. Please try again.',
-        debug: process.env.NODE_ENV === 'development' ? JSON.stringify(error, Object.getOwnPropertyNames(error)) : undefined
-      });
-    }
-  });
-};
+  } catch (error) {
+    console.error('API Error:', error);
+
+    return res.status(500).json({
+      msg: 'Server error. Please try again.',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+}
