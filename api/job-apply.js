@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const { formidable } = require('formidable');
+const multiparty = require('multiparty');
 const fs = require('fs');
 
 const transporter = nodemailer.createTransport({
@@ -11,56 +11,37 @@ const transporter = nodemailer.createTransport({
 });
 
 module.exports = async (req, res) => {
-  // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
   if (req.method !== 'POST') {
     return res.status(405).json({ msg: 'Method not allowed' });
   }
 
-  // Initialize formidable
-  const form = formidable({
-    keepExtensions: true,
-    maxFileSize: 10 * 1024 * 1024, // 10MB
-  });
+  const form = new multiparty.Form();
 
-  // Parse the form
   form.parse(req, async (err, fields, files) => {
     if (err) {
       console.error('Form parse error:', err);
       return res.status(500).json({ msg: 'Error parsing form data' });
     }
 
+    const name = fields.name?.[0];
+    const email = fields.email?.[0];
+    const phone = fields.phone?.[0];
+    let position = fields.position?.[0];
+    const customPosition = fields.customPosition?.[0];
+    const experience = fields.experience?.[0];
+    const message = fields.message?.[0];
+    const resumeFile = files.resume?.[0];
+
+    // Use custom position if 'other' is selected
+    if (position === 'other' && customPosition) {
+      position = customPosition;
+    }
+
+    if (!resumeFile) {
+      return res.status(400).json({ msg: 'Resume file is required' });
+    }
+
     try {
-      // Extract values (formidable v3 returns arrays)
-      const name = Array.isArray(fields.name) ? fields.name[0] : fields.name;
-      const email = Array.isArray(fields.email) ? fields.email[0] : fields.email;
-      const phone = Array.isArray(fields.phone) ? fields.phone[0] : fields.phone;
-      let position = Array.isArray(fields.position) ? fields.position[0] : fields.position;
-      const customPosition = Array.isArray(fields.customPosition) ? fields.customPosition[0] : fields.customPosition;
-      const experience = Array.isArray(fields.experience) ? fields.experience[0] : fields.experience;
-      const message = Array.isArray(fields.message) ? fields.message[0] : fields.message;
-      const resumeFile = Array.isArray(files.resume) ? files.resume[0] : files.resume;
-
-      // Use custom position if 'other' is selected
-      if (position === 'other' && customPosition) {
-        position = customPosition;
-      }
-
-      if (!resumeFile) {
-        return res.status(400).json({ msg: 'Resume file is required' });
-      }
-
-      // Formidable v3 uses 'filepath' instead of 'path'
-      const resumePath = resumeFile.filepath || resumeFile.path;
-      const resumeName = resumeFile.originalFilename || resumeFile.newFilename || 'resume.pdf';
-
       const html = `
         <h2>New Job Application for: ${position}</h2>
         <p><strong>Name:</strong> ${name}</p>
@@ -78,8 +59,8 @@ module.exports = async (req, res) => {
         subject: `Application for ${position} – ${name}`,
         html,
         attachments: [{
-          filename: resumeName,
-          path: resumePath
+          filename: resumeFile.originalFilename,
+          path: resumeFile.path
         }]
       });
 
@@ -100,9 +81,7 @@ module.exports = async (req, res) => {
       });
 
       // Clean up uploaded file
-      fs.unlink(resumePath, (unlinkErr) => {
-        if (unlinkErr) console.error('Error deleting temp file:', unlinkErr);
-      });
+      fs.unlink(resumeFile.path, () => { });
 
       return res.status(200).json({ msg: 'Application submitted successfully!' });
 
@@ -110,10 +89,8 @@ module.exports = async (req, res) => {
       console.error('Email error:', error);
 
       // Clean up file if it exists
-      const resumeFile = Array.isArray(files.resume) ? files.resume[0] : files.resume;
-      if (resumeFile) {
-        const resumePath = resumeFile.filepath || resumeFile.path;
-        fs.unlink(resumePath, () => { });
+      if (resumeFile?.path) {
+        fs.unlink(resumeFile.path, () => { });
       }
 
       return res.status(500).json({
